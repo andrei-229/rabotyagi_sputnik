@@ -1,6 +1,6 @@
 ## Миссия запуска ракеты на орбиту смоделирована в игре Kerbal Space Program
 
-### __Команда Работяги__
+### __Команда "Работяги"__
 
 ## Отчёт
 Документация по проекту c презентацией + видео с полётом ([click](https://drive.google.com/drive/folders/1m7YfCk10n7CWOl0NTi-jgTOnSzkREYj3?usp=drive_link))
