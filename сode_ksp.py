@@ -17,8 +17,10 @@ print(vessel.name)
 ut = conn.add_stream(getattr, conn.space_center, 'ut') # getattr достаёт атрибут "времени"
 m_all = vessel.mass # Масса всей ракеты
 altitude = conn.add_stream(getattr, vessel.flight(), 'mean_altitude') # Достаём высоту
+position = conn.add_stream(getattr, vessel.flight(), 'rotation') # Достаём координаты
 apoapsis = conn.add_stream(getattr, vessel.orbit, 'apoapsis_altitude') # Достаём апоапсис(апогеию)
 stage_2_resources = vessel.resources_in_decouple_stage(stage=2, cumulative=False) # Достаём ресурсы для 2 ступени - твердое топливо
+position = vessel.flight().rotation
 
 '''
 Как видит метод resources_in_decoulpe_stage() ступени
@@ -64,6 +66,7 @@ time_values = []
 speed_values = []
 altitude_values = []
 angle_values = []
+x_values = []
 
 while True:
     t = round(ut(), 4) # Получение значения текущего времени
@@ -92,7 +95,7 @@ while True:
             srbs_separeted = True
             print('Открепление топливных баков')
 
-    # Уменьшение тяги при уменьшении сопротивления от атмосферы (при приближении апогеи ракеты к целевой апогее)
+    # Уменьшение тяги при приближении апогеи ракеты к целевой апогее
     if apoapsis() > target_altitude * 0.9:
         print('Приближаемся к апогее')
         break
@@ -109,6 +112,7 @@ while apoapsis() < target_altitude:
     time_values.append(t)
     speed_values.append(v)
     altitude_values.append(h)
+    x_values.append(vessel.flight().rotation)
     pass
 
 print('Апогея достигнута')
@@ -121,10 +125,11 @@ while altitude() < 70_500:
     t = round(conn.space_center.ut, 4)
     v = round(vessel.flight(vessel.orbit.body.reference_frame).speed, 4)
     h = round(altitude(), 4)
-    
+
     time_values.append(t)
     speed_values.append(v)
     altitude_values.append(h)
+    x_values.append(vessel.flight().rotation)
     pass
 
 # Запсиь скорости, времени и высоты в файл для дальнейшего использования в построении графиков
@@ -132,6 +137,8 @@ time_values = sorted(set(time_values))
 speed_values = sorted(set(speed_values))
 altitude_values = sorted(set(altitude_values))
 angle_values = sorted(set(angle_values))
+x_values = sorted(set(x_values))
+print(x_values)
 
 with open('speed_in_ksp.json', 'w') as f:
     json.dump(speed_values, f)
@@ -141,6 +148,8 @@ with open('altitude_in_ksp.json', 'w') as f:
     json.dump(altitude_values, f)
 with open('angle_in_ksp.json', 'w') as f:
     json.dump(angle_values, f)
+with open('x_in_ksp.json', 'w') as f:
+    f.write(x_values)
 
 
 # Вычисление приращение скорости для выхода на круговую орбиту (используя уравнение vis-viva(Бургаса))
@@ -167,7 +176,7 @@ burn_time = (m0 - m1) / flow_rate # Время манёвра
 # time.sleep(1)
 
 # Ориентация корабля
-print('Ориентация корабля для округления орбиты')
+print('Ориентация корабля для будущего манёвра округления орбиты')
 vessel.auto_pilot.reference_frame = node.reference_frame # Задаём кораблю систему отсчёта, которая фиксирована относительно узла маневра
 vessel.auto_pilot.target_direction = (0, 1, 0) # Задаём вектор направления (по оси Y - в направлении облета)
 vessel.auto_pilot.wait() # Отправляем в "сон" автопилот

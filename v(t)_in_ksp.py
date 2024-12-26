@@ -16,8 +16,8 @@ x = np.array(time_in_ksp)
 y = np.array(speed_in_ksp)
 
 plt.title('График скорости ракеты от времени в KSP', fontsize=12, fontweight="bold") # Титульник на графике
-plt.ylabel("Скорость V(t)", fontsize=14) # Описание функции y на графике
-plt.xlabel("Время t", fontsize=14) # Описание функции x на графике
+plt.ylabel("Скорость v(t) (м/с)", fontsize=14) # Описание функции y на графике
+plt.xlabel("Время t (с)", fontsize=14) # Описание функции x на графике
 plt.grid(True) # Вывод сетки
 plt.plot(x - time_in_ksp[0], y, '-r', label='v(t)') # Вывод переменных на экран
 plt.show() # Вывод графика

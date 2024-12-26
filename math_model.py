@@ -10,11 +10,6 @@ m_liquid = 36_000 # Масса топливного бака
 m_liquid_fuel_kg = 32_000 # Масса жидкого топлива с окислителем
 m_vessel_without_srbs = 35_750 # Масса ракеты без твердотопливных ускорителей
 
-# Топливо
-m_fuel = 8100 # Всё топливо
-m_liquid_fuel = 6400 # Жидкое топливо с окислителем
-m_srbs_fuel = 1700 # Твердое топливо
-
 # Удельный импульс
 I_ud_srbs = 230 # Удельный импульс твердотопливных ускорителей
 I_ud_luquid = 320 # Удельный импульс жидкого двигателя и после откреплления твердотопловных ускорителей
@@ -55,12 +50,13 @@ T = 300 # Температура
 P_0 = 10 ** 5 # Давление
 GAZ_P = M_A / (R * T)
 
-x_values = [0]
-y_values = [0]
-vx_values = [0]
-vy_values = [0]
 ax_values = [0]
 ay_values = [-9.81]
+vx_values = [0]
+vy_values = [0]
+x_values = [0]
+y_values = [0]
+
 
 x = 0
 y = 0
@@ -98,12 +94,21 @@ for i in range(int(time_to_out_atmosphere // step)):
     vy = vy_values[-1] + ay * step
     x = x_values[-1] + vx * step
     y = y_values[-1] + vy * step
+
     ax_values.append(ax)
     ay_values.append(ay)
     vx_values.append(vx)
     vy_values.append(vy)
     x_values.append(x)
     y_values.append(round(y,2))
+    if t == 80:
+        print(f'{round((vx_values[-1] ** 2 + vy_values[-1] ** 2) ** 0.5, 4)} м/с, шаг = {step}, t = {t} c')
+    if t == 120:
+        print(f'{round((vx_values[-1] ** 2 + vy_values[-1] ** 2) ** 0.5, 4)} м/с, шаг = {step}, t = {t} c')
+    if t == 50:
+        print(f'{round((vx_values[-1] ** 2 + vy_values[-1] ** 2) ** 0.5, 4)} м/с, шаг = {step}, t = {t} c')
+    if t == 132:
+        print(f'{round((vx_values[-1] ** 2 + vy_values[-1] ** 2) ** 0.5, 4)} м/с, шаг = {step}, t = {t} c')
 
 
 speed = [round((vx_values[i] ** 2 + vy_values[i] ** 2) ** 0.5, 4) for i in range(len(vx_values))] # Вычисление скорости и запись значений в массив
@@ -112,3 +117,4 @@ with open('speed_math_model.json', 'w') as f:
     json.dump(speed, f)
 with open('altitude_math_model.json', 'w') as f:
     json.dump(y_values, f)
+
